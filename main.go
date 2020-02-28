@@ -12,5 +12,6 @@ func main() {
     }
 
     http.HandleFunc("/user/register", HandleUserRegister)
+    http.HandleFunc("/user/login", HandleUserLogin)
     server.ListenAndServe()
 }

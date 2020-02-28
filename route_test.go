@@ -13,16 +13,22 @@ func TestRoute(t *testing.T) {
         handler func(http.ResponseWriter, *http.Request)
     }{
         {
-            name: "GET returns 200",
+            name: "/user/register GET returns 200",
             method: http.MethodGet,
             url: "/user/register",
             handler: HandleUserRegister,
         },
         {
-            name: "POST returns 200",
+            name: "/user/register POST returns 200",
             method: http.MethodPost,
             url: "/user/register",
             handler: HandleUserRegister,
+        },
+        {
+            name: "/user/login GET returns 200",
+            method: http.MethodGet,
+            url: "/user/login",
+            handler: HandleUserLogin,
         },
     }
 
