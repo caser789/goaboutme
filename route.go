@@ -39,3 +39,15 @@ func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
 
 func HandleUserLogout(w http.ResponseWriter, r *http.Request) {
 }
+
+func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
+    switch r.Method {
+    case "GET":
+        HandleUserProfileGet(w, r)
+    default:
+        http.Error(w, "Method not supported", http.StatusInternalServerError)
+    }
+}
+
+func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
+}
