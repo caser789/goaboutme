@@ -44,10 +44,15 @@ func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":
         HandleUserProfileGet(w, r)
+    case "POST":
+        HandleUserProfilePost(w, r)
     default:
         http.Error(w, "Method not supported", http.StatusInternalServerError)
     }
 }
 
 func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
+}
+
+func HandleUserProfilePost(w http.ResponseWriter, r *http.Request) {
 }
