@@ -11,6 +11,6 @@ func main() {
         IdleTimeout:  20 * time.Second,
     }
 
-    http.HandleFunc("/user/register", handleUserRegister)
+    http.HandleFunc("/user/register", HandleUserRegister)
     server.ListenAndServe()
 }
