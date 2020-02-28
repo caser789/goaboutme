@@ -30,6 +30,12 @@ func TestRoute(t *testing.T) {
             url: "/user/login",
             handler: HandleUserLogin,
         },
+        {
+            name: "/user/login POST returns 200",
+            method: http.MethodPost,
+            url: "/user/login",
+            handler: HandleUserLogin,
+        },
     }
 
     for _, tt := range tests {

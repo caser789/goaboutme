@@ -23,10 +23,15 @@ func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":
         handleUserLoginGet(w, r)
+    case "POST":
+        handleUserLoginPost(w, r)
     default:
         http.Error(w, "Method not supported", http.StatusInternalServerError)
     }
 }
 
 func handleUserLoginGet(w http.ResponseWriter, r *http.Request) {
+}
+
+func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
 }
