@@ -35,3 +35,7 @@ func handleUserLoginGet(w http.ResponseWriter, r *http.Request) {
 
 func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
 }
+
+
+func HandleUserLogout(w http.ResponseWriter, r *http.Request) {
+}

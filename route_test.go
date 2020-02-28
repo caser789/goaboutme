@@ -36,6 +36,12 @@ func TestRoute(t *testing.T) {
             url: "/user/login",
             handler: HandleUserLogin,
         },
+        {
+            name: "/user/logout GET returns 200",
+            method: http.MethodGet,
+            url: "/user/logout",
+            handler: HandleUserLogout,
+        },
     }
 
     for _, tt := range tests {

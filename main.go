@@ -13,5 +13,6 @@ func main() {
 
     http.HandleFunc("/user/register", HandleUserRegister)
     http.HandleFunc("/user/login", HandleUserLogin)
+    http.HandleFunc("/user/logout", HandleUserLogout)
     server.ListenAndServe()
 }
