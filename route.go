@@ -2,6 +2,8 @@ package main
 
 import "html/template"
 import "net/http"
+// import "bytes"
+// import "io"
 
 const CookieKey = "sessionId"
 
@@ -84,7 +86,7 @@ func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
-    // 1. Get sessionid from cookie
+    // 1. Get sessionId from cookie
 	_, err := r.Cookie(CookieKey)
     if err != nil {
         http.Redirect(w, r, "/user/login", 302)
@@ -99,4 +101,25 @@ func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUserProfilePost(w http.ResponseWriter, r *http.Request) {
+    // 1. Get sessionId from cookie
+	_, err := r.Cookie(CookieKey)
+    if err != nil {
+        http.Redirect(w, r, "/user/login", 302)
+    }
+
+    // 2. Get session by sesionid (200 or 404)
+    // 3. Get user by session
+    // 4. Parse file
+    r.ParseMultipartForm(10485760) // max body in memory is 10MB
+    file, _, _ := r.FormFile("avatar")
+    if file != nil {
+        defer file.Close()
+    }
+    // buf := bytes.NewBuffer(nil)
+    // io.Copy(buf, file)
+    // _ = r.PostFormValue("nickname")
+    // 5. Update profile
+    // 6. render profile
+    t, _ := template.ParseFiles("templates/profile.html")
+    t.Execute(w, nil)
 }

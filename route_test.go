@@ -65,11 +65,19 @@ func TestRoute(t *testing.T) {
             cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
         },
         {
-            name: "/user/profile POST returns 200",
+            name: "/user/profile POST without cookie returns 302",
+            method: http.MethodPost,
+            url: "/user/profile",
+            handler: HandleUserProfile,
+            statusCode: http.StatusFound,
+        },
+        {
+            name: "/user/profile POST with cookie returns 200",
             method: http.MethodPost,
             url: "/user/profile",
             handler: HandleUserProfile,
             statusCode: http.StatusOK,
+            cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
         },
     }
 
