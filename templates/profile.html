@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            profile
+        </title>
+    </head>
+    <body>
+        <form action="/user/profile" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="username" value="{{ .username }}" disabled />
+            </div>
+
+            <div>
+                <label for="nickname">Nickname:</label>
+                <input type="text" name="nickname" value="{{ .nickname }}"/>
+            </div>
+
+            <div>
+                <label>Avatar:</label>
+                <img src="data:image/jpg;base64,{{ .avatar }}" width="200" height="200">
+
+                <div>
+                    <label for="avatar">Update avatar:</label>
+                    <input type="file" name="avatar">
+                </div>
+            </div>
+            <input type="submit">
+        </form>
+
+        <button onclick="window.location.href = '/user/logout';">Log out</button>
+
+    </body>
+</html>

@@ -12,6 +12,7 @@ func TestRoute(t *testing.T) {
         url string
         handler func(http.ResponseWriter, *http.Request)
         statusCode int
+        cookie *http.Cookie
     }{
         {
             name: "/user/register GET returns 200",
@@ -49,11 +50,19 @@ func TestRoute(t *testing.T) {
             statusCode: http.StatusOK,
         },
         {
-            name: "/user/profile GET returns 200",
+            name: "/user/profile GET without cookie returns 302",
+            method: http.MethodGet,
+            url: "/user/profile",
+            handler: HandleUserProfile,
+            statusCode: http.StatusFound,
+        },
+        {
+            name: "/user/profile GET with cookie returns 200",
             method: http.MethodGet,
             url: "/user/profile",
             handler: HandleUserProfile,
             statusCode: http.StatusOK,
+            cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
         },
         {
             name: "/user/profile POST returns 200",
@@ -67,6 +76,10 @@ func TestRoute(t *testing.T) {
     for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {
             request, _ := http.NewRequest(tt.method, tt.url, nil)
+            if tt.cookie != nil {
+                request.AddCookie(tt.cookie)
+            }
+
             response := httptest.NewRecorder()
 
             tt.handler(response, request)

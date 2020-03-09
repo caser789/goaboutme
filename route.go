@@ -3,6 +3,8 @@ package main
 import "html/template"
 import "net/http"
 
+const CookieKey = "sessionId"
+
 func HandleUserRegister(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":
@@ -58,7 +60,7 @@ func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
     // 4. Create or update session
     // 5. render with cookie
     cookie := http.Cookie{
-        Name: "_cookie",
+        Name: CookieKey,
         Value: "xxx",
         HttpOnly: true,
     }
@@ -82,6 +84,18 @@ func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
+    // 1. Get sessionid from cookie
+	_, err := r.Cookie(CookieKey)
+    if err != nil {
+        http.Redirect(w, r, "/user/login", 302)
+        return
+    }
+
+    // 2. Get session by sesionid (200 or 404)
+    // 3. Get user by session
+    // 4. render the profile
+    t, _ := template.ParseFiles("templates/profile.html")
+    t.Execute(w, nil)
 }
 
 func HandleUserProfilePost(w http.ResponseWriter, r *http.Request) {
