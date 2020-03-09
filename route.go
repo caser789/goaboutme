@@ -1,5 +1,6 @@
 package main
 
+import "html/template"
 import "net/http"
 
 func HandleUserRegister(w http.ResponseWriter, r *http.Request) {
@@ -14,6 +15,9 @@ func HandleUserRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUserRegisterGet(w http.ResponseWriter, r *http.Request) {
+    t, _ := template.ParseFiles("templates/register.html")
+    t.Execute(w, nil)
+    return
 }
 
 func handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {

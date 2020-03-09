@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            register
+        </title>
+        <style>
+            label {
+                display: block;
+                font: .9rem 'Fira Sans', sans-serif;
+            }
+
+            input[type='submit'],
+            label {
+                margin-top: 1rem;
+            }
+        </style>
+
+    </head>
+    <body>
+        <p>register</p>
+
+        <form action="/user/register" method="post" enctype="application/x-www-form-urlencoded">
+
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+
+            <div>
+                <label for="pass">Password (8 characters minimum):</label>
+                <input type="password" id="pass" name="password"
+                    minlength="8" required>
+            </div>
+
+            <input type="submit" value="Sign up">
+
+        </form>
+        <a href="/user/login">Have an account?</a>
+
+    </body>
+</html>
