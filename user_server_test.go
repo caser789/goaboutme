@@ -6,11 +6,12 @@ import "net/http/httptest"
 
 
 func TestRoute(t *testing.T) {
+    server := NewUserServer()
+
     tests := []struct{
         name string
         method string
         url string
-        handler func(http.ResponseWriter, *http.Request)
         statusCode int
         cookie *http.Cookie
     }{
@@ -18,49 +19,42 @@ func TestRoute(t *testing.T) {
             name: "/user/register GET returns 200",
             method: http.MethodGet,
             url: "/user/register",
-            handler: HandleUserRegister,
             statusCode: http.StatusOK,
         },
         {
             name: "/user/register POST returns 302", // if success
             method: http.MethodPost,
             url: "/user/register",
-            handler: HandleUserRegister,
             statusCode: http.StatusFound,
         },
         {
             name: "/user/login GET returns 200",
             method: http.MethodGet,
             url: "/user/login",
-            handler: HandleUserLogin,
             statusCode: http.StatusOK,
         },
         {
             name: "/user/login POST returns 302",
             method: http.MethodPost,
             url: "/user/login",
-            handler: HandleUserLogin,
             statusCode: http.StatusFound,
         },
         {
             name: "/user/logout GET returns 302",
             method: http.MethodGet,
             url: "/user/logout",
-            handler: HandleUserLogout,
             statusCode: http.StatusFound,
         },
         {
             name: "/user/profile GET without cookie returns 302",
             method: http.MethodGet,
             url: "/user/profile",
-            handler: HandleUserProfile,
             statusCode: http.StatusFound,
         },
         {
             name: "/user/profile GET with cookie returns 200",
             method: http.MethodGet,
             url: "/user/profile",
-            handler: HandleUserProfile,
             statusCode: http.StatusOK,
             cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
         },
@@ -68,14 +62,12 @@ func TestRoute(t *testing.T) {
             name: "/user/profile POST without cookie returns 302",
             method: http.MethodPost,
             url: "/user/profile",
-            handler: HandleUserProfile,
             statusCode: http.StatusFound,
         },
         {
             name: "/user/profile POST with cookie returns 200",
             method: http.MethodPost,
             url: "/user/profile",
-            handler: HandleUserProfile,
             statusCode: http.StatusOK,
             cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
         },
@@ -90,7 +82,7 @@ func TestRoute(t *testing.T) {
 
             response := httptest.NewRecorder()
 
-            tt.handler(response, request)
+            server.ServeHTTP(response, request)
 
             assertStatus(t, response.Code, tt.statusCode)
         })

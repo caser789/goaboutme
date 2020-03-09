@@ -7,23 +7,40 @@ import "net/http"
 
 const CookieKey = "sessionId"
 
-func HandleUserRegister(w http.ResponseWriter, r *http.Request) {
+type UserServer struct{
+    http.Handler
+}
+
+func NewUserServer() *UserServer {
+	p := new(UserServer)
+
+	router := http.NewServeMux()
+	router.Handle("/user/register", http.HandlerFunc(p.handleUserRegister))
+	router.Handle("/user/login", http.HandlerFunc(p.handleUserLogin))
+	router.Handle("/user/logout", http.HandlerFunc(p.handleUserLogout))
+	router.Handle("/user/profile", http.HandlerFunc(p.handleUserProfile))
+
+	p.Handler = router
+	return p
+}
+
+func (u *UserServer) handleUserRegister(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":
-        handleUserRegisterGet(w, r)
+        u.handleUserRegisterGet(w, r)
     case "POST":
-        handleUserRegisterPost(w, r)
+        u.handleUserRegisterPost(w, r)
     default:
         http.Error(w, "Method not supported", http.StatusInternalServerError)
     }
 }
 
-func handleUserRegisterGet(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserRegisterGet(w http.ResponseWriter, r *http.Request) {
     t, _ := template.ParseFiles("templates/register.html")
     t.Execute(w, nil)
 }
 
-func handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
     // 1. Parse request
     _ = r.ParseForm() // TODO handle error
     _ = r.PostFormValue("username")
@@ -34,23 +51,23 @@ func handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/user/login", 302)
 }
 
-func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserLogin(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":
-        handleUserLoginGet(w, r)
+        u.handleUserLoginGet(w, r)
     case "POST":
-        handleUserLoginPost(w, r)
+        u.handleUserLoginPost(w, r)
     default:
         http.Error(w, "Method not supported", http.StatusInternalServerError)
     }
 }
 
-func handleUserLoginGet(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserLoginGet(w http.ResponseWriter, r *http.Request) {
     t, _ := template.ParseFiles("templates/login.html")
     t.Execute(w, nil)
 }
 
-func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
     // 1. Parse request
     _ = r.ParseForm() // TODO handle error
 
@@ -71,7 +88,7 @@ func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func HandleUserLogout(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserLogout(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie(CookieKey)
 	if err != http.ErrNoCookie {
         // expire session
@@ -79,18 +96,18 @@ func HandleUserLogout(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/user/login", 302)
 }
 
-func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserProfile(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":
-        HandleUserProfileGet(w, r)
+        u.handleUserProfileGet(w, r)
     case "POST":
-        HandleUserProfilePost(w, r)
+        u.handleUserProfilePost(w, r)
     default:
         http.Error(w, "Method not supported", http.StatusInternalServerError)
     }
 }
 
-func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserProfileGet(w http.ResponseWriter, r *http.Request) {
     // 1. Get sessionId from cookie
 	_, err := r.Cookie(CookieKey)
     if err != nil {
@@ -105,7 +122,7 @@ func HandleUserProfileGet(w http.ResponseWriter, r *http.Request) {
     t.Execute(w, nil)
 }
 
-func HandleUserProfilePost(w http.ResponseWriter, r *http.Request) {
+func (u *UserServer) handleUserProfilePost(w http.ResponseWriter, r *http.Request) {
     // 1. Get sessionId from cookie
 	_, err := r.Cookie(CookieKey)
     if err != nil {
