@@ -17,10 +17,16 @@ func HandleUserRegister(w http.ResponseWriter, r *http.Request) {
 func handleUserRegisterGet(w http.ResponseWriter, r *http.Request) {
     t, _ := template.ParseFiles("templates/register.html")
     t.Execute(w, nil)
-    return
 }
 
 func handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
+    // 1. Parse request
+    _ = r.ParseForm()
+    _ = r.PostFormValue("username")
+    _ = r.PostFormValue("password")
+
+    // 2. TODO Create user
+    http.Redirect(w, r, "/user/login", 302)
 }
 
 func HandleUserLogin(w http.ResponseWriter, r *http.Request) {

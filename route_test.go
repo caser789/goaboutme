@@ -11,48 +11,56 @@ func TestRoute(t *testing.T) {
         method string
         url string
         handler func(http.ResponseWriter, *http.Request)
+        statusCode int
     }{
         {
             name: "/user/register GET returns 200",
             method: http.MethodGet,
             url: "/user/register",
             handler: HandleUserRegister,
+            statusCode: http.StatusOK,
         },
         {
-            name: "/user/register POST returns 200",
+            name: "/user/register POST returns 302", // if success
             method: http.MethodPost,
             url: "/user/register",
             handler: HandleUserRegister,
+            statusCode: http.StatusFound,
         },
         {
             name: "/user/login GET returns 200",
             method: http.MethodGet,
             url: "/user/login",
             handler: HandleUserLogin,
+            statusCode: http.StatusOK,
         },
         {
             name: "/user/login POST returns 200",
             method: http.MethodPost,
             url: "/user/login",
             handler: HandleUserLogin,
+            statusCode: http.StatusOK,
         },
         {
             name: "/user/logout GET returns 200",
             method: http.MethodGet,
             url: "/user/logout",
             handler: HandleUserLogout,
+            statusCode: http.StatusOK,
         },
         {
             name: "/user/profile GET returns 200",
             method: http.MethodGet,
             url: "/user/profile",
             handler: HandleUserProfile,
+            statusCode: http.StatusOK,
         },
         {
             name: "/user/profile POST returns 200",
             method: http.MethodPost,
             url: "/user/profile",
             handler: HandleUserProfile,
+            statusCode: http.StatusOK,
         },
     }
 
@@ -63,7 +71,7 @@ func TestRoute(t *testing.T) {
 
             tt.handler(response, request)
 
-            assertStatus(t, response.Code, http.StatusOK)
+            assertStatus(t, response.Code, tt.statusCode)
         })
     }
 }
