@@ -72,6 +72,11 @@ func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
 
 
 func HandleUserLogout(w http.ResponseWriter, r *http.Request) {
+	_, err := r.Cookie(CookieKey)
+	if err != http.ErrNoCookie {
+        // expire session
+	}
+    http.Redirect(w, r, "/user/login", 302)
 }
 
 func HandleUserProfile(w http.ResponseWriter, r *http.Request) {

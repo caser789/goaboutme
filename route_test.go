@@ -43,11 +43,11 @@ func TestRoute(t *testing.T) {
             statusCode: http.StatusFound,
         },
         {
-            name: "/user/logout GET returns 200",
+            name: "/user/logout GET returns 302",
             method: http.MethodGet,
             url: "/user/logout",
             handler: HandleUserLogout,
-            statusCode: http.StatusOK,
+            statusCode: http.StatusFound,
         },
         {
             name: "/user/profile GET without cookie returns 302",
