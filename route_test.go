@@ -35,11 +35,11 @@ func TestRoute(t *testing.T) {
             statusCode: http.StatusOK,
         },
         {
-            name: "/user/login POST returns 200",
+            name: "/user/login POST returns 302",
             method: http.MethodPost,
             url: "/user/login",
             handler: HandleUserLogin,
-            statusCode: http.StatusOK,
+            statusCode: http.StatusFound,
         },
         {
             name: "/user/logout GET returns 200",

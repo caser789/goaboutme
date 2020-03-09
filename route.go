@@ -21,7 +21,7 @@ func handleUserRegisterGet(w http.ResponseWriter, r *http.Request) {
 
 func handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
     // 1. Parse request
-    _ = r.ParseForm()
+    _ = r.ParseForm() // TODO handle error
     _ = r.PostFormValue("username")
     _ = r.PostFormValue("password")
 
@@ -47,6 +47,23 @@ func handleUserLoginGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
+    // 1. Parse request
+    _ = r.ParseForm() // TODO handle error
+
+    _ = r.PostFormValue("username")
+    _ = r.PostFormValue("password")
+
+    // 2. Get user by username (200 and 400)
+    // 3. Auth user against password (200 and 400)
+    // 4. Create or update session
+    // 5. render with cookie
+    cookie := http.Cookie{
+        Name: "_cookie",
+        Value: "xxx",
+        HttpOnly: true,
+    }
+    http.SetCookie(w, &cookie)
+    http.Redirect(w, r, "/user/profile", 302)
 }
 
 
