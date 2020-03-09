@@ -25,7 +25,8 @@ func handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
     _ = r.PostFormValue("username")
     _ = r.PostFormValue("password")
 
-    // 2. TODO Create user
+    // 2. TODO If user exists, return error
+    // 3. TODO Create user
     http.Redirect(w, r, "/user/login", 302)
 }
 
@@ -41,6 +42,8 @@ func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUserLoginGet(w http.ResponseWriter, r *http.Request) {
+    t, _ := template.ParseFiles("templates/login.html")
+    t.Execute(w, nil)
 }
 
 func handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
