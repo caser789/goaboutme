@@ -8,6 +8,7 @@ import "net/http/httptest"
 type StubUser struct {
     registerCalls []string
     loginCalls []string
+    logoutCalls []string
 }
 
 func (u *StubUser) Register(username, password string) error {
@@ -20,6 +21,9 @@ func (u *StubUser) Login(username, password string) (sessionId string, err error
     return "", nil
 }
 
+func (u *StubUser) Logout(sessionId string) {
+    u.logoutCalls = append(u.logoutCalls, "")
+}
 
 func TestRoute(t *testing.T) {
     user := &StubUser{}
@@ -114,7 +118,7 @@ func assertStatus(t *testing.T, got, want int) {
 }
 
 func TestRegisterPost(t *testing.T) {
-    t.Run("test success", func(t *testing.T) {
+    t.Run("test register success", func(t *testing.T) {
         user := &StubUser{
             registerCalls: []string{},
         }
@@ -134,7 +138,7 @@ func TestRegisterPost(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-    t.Run("test success", func(t *testing.T) {
+    t.Run("test login success", func(t *testing.T) {
         user := &StubUser{
             registerCalls: []string{},
         }
@@ -148,7 +152,30 @@ func TestLogin(t *testing.T) {
         server.ServeHTTP(response, request)
 
 		if len(user.loginCalls) != 1 {
-			t.Fatalf("got %d calls to Register want %d", len(user.loginCalls), 1)
+			t.Fatalf("got %d calls to Login want %d", len(user.loginCalls), 1)
+		}
+    })
+}
+
+func TestLogout(t *testing.T) {
+    t.Run("test logout success", func(t *testing.T) {
+        user := &StubUser{
+            registerCalls: []string{},
+        }
+        server := NewUserServer(user)
+
+        method :=  http.MethodPost
+        url := "/user/logout"
+
+        request, _ := http.NewRequest(method, url, nil)
+        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "abc"})
+
+        response := httptest.NewRecorder()
+        server.ServeHTTP(response, request)
+
+		if len(user.logoutCalls) != 1 {
+
+			t.Fatalf("got %d calls to Logout want %d", len(user.logoutCalls), 1)
 		}
     })
 }

@@ -10,6 +10,7 @@ const CookieKey = "sessionId"
 type IUser interface {
     Register(username, password string) error
     Login(username, password string) (sessionId string, err error)
+    Logout(sessionId string)
 }
 
 type UserServer struct{
@@ -96,9 +97,11 @@ func (u *UserServer) handleUserLoginPost(w http.ResponseWriter, r *http.Request)
 
 
 func (u *UserServer) handleUserLogout(w http.ResponseWriter, r *http.Request) {
-	_, err := r.Cookie(CookieKey)
+	cookie, err := r.Cookie(CookieKey)
+
 	if err != http.ErrNoCookie {
-        // expire session
+        sessionId := cookie.Value
+        u.user.Logout(sessionId)
 	}
     http.Redirect(w, r, "/user/login", 302)
 }

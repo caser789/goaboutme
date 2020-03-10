@@ -19,3 +19,5 @@ func (u *User) Register(username, password string) error {
 func (u *User) Login(username, password string) (sessionId string, err error) {
     return "", nil
 }
+
+func (u *User) Logout(sessionId string) {}
