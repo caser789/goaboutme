@@ -125,5 +125,3 @@ func TestRegisterPost(t *testing.T) {
 		}
     })
 }
-
-

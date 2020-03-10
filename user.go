@@ -1,7 +1,11 @@
 package main
 
+type IUserModel interface {
+    Create(username, password string) error
+}
+
 type User struct {
-    model *UserModel
+    model IUserModel
 }
 
 func (u *User) Create(username, password string) error {
