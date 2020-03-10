@@ -6,13 +6,20 @@ import "net/http/httptest"
 
 
 type StubUser struct {
-    createCalls []string
+    registerCalls []string
+    loginCalls []string
 }
 
-func (u *StubUser) Create(username, password string) error {
-    u.createCalls = append(u.createCalls, username)
+func (u *StubUser) Register(username, password string) error {
+    u.registerCalls = append(u.registerCalls, username)
     return nil
 }
+
+func (u *StubUser) Login(username, password string) (sessionId string, err error) {
+    u.loginCalls = append(u.loginCalls, username)
+    return "", nil
+}
+
 
 func TestRoute(t *testing.T) {
     user := &StubUser{}
@@ -109,7 +116,7 @@ func assertStatus(t *testing.T, got, want int) {
 func TestRegisterPost(t *testing.T) {
     t.Run("test success", func(t *testing.T) {
         user := &StubUser{
-            createCalls: []string{},
+            registerCalls: []string{},
         }
         server := NewUserServer(user)
 
@@ -120,8 +127,28 @@ func TestRegisterPost(t *testing.T) {
         response := httptest.NewRecorder()
         server.ServeHTTP(response, request)
 
-		if len(user.createCalls) != 1 {
-			t.Fatalf("got %d calls to Create want %d", len(user.createCalls), 1)
+		if len(user.registerCalls) != 1 {
+			t.Fatalf("got %d calls to Register want %d", len(user.registerCalls), 1)
+		}
+    })
+}
+
+func TestLogin(t *testing.T) {
+    t.Run("test success", func(t *testing.T) {
+        user := &StubUser{
+            registerCalls: []string{},
+        }
+        server := NewUserServer(user)
+
+        method :=  http.MethodPost
+        url := "/user/login"
+
+        request, _ := http.NewRequest(method, url, nil)
+        response := httptest.NewRecorder()
+        server.ServeHTTP(response, request)
+
+		if len(user.loginCalls) != 1 {
+			t.Fatalf("got %d calls to Register want %d", len(user.loginCalls), 1)
 		}
     })
 }

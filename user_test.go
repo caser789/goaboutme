@@ -11,7 +11,7 @@ func ( u *StubModel) Create(username, password string) error {
     return nil
 }
 
-func TestCreate(t *testing.T) {
+func TestRegister(t *testing.T) {
     t.Run("test success", func(t *testing.T) {
         model := &StubModel{
             usernameToPassword: map[string]string{},
@@ -20,13 +20,11 @@ func TestCreate(t *testing.T) {
 
         username := "jiao.xue"
         password := "123456"
-        user.Create(username, password)
+        user.Register(username, password)
 
         assertContains(t, model.usernameToPassword, username)
     })
 }
-
-
 
 func assertContains(t *testing.T, store map[string]string, key string) {
 	t.Helper()

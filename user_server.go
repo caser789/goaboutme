@@ -8,7 +8,8 @@ import "net/http"
 const CookieKey = "sessionId"
 
 type IUser interface {
-    Create(username, password string) error
+    Register(username, password string) error
+    Login(username, password string) (sessionId string, err error)
 }
 
 type UserServer struct{
@@ -53,7 +54,8 @@ func (u *UserServer) handleUserRegisterPost(w http.ResponseWriter, r *http.Reque
     password := r.PostFormValue("password")
 
     // 2. Create user
-    _ = u.user.Create(username, password)
+    _ = u.user.Register(username, password)
+    // TODO user exists error
 
     http.Redirect(w, r, "/user/login", 302)
 }
@@ -75,19 +77,17 @@ func (u *UserServer) handleUserLoginGet(w http.ResponseWriter, r *http.Request) 
 }
 
 func (u *UserServer) handleUserLoginPost(w http.ResponseWriter, r *http.Request) {
-    // 1. Parse request
     _ = r.ParseForm() // TODO handle error
+    username := r.PostFormValue("username")
+    password := r.PostFormValue("password")
 
-    _ = r.PostFormValue("username")
-    _ = r.PostFormValue("password")
+    sessionId, _ := u.user.Login(username, password)
+    // 1. TODO User not found error
+    // 2. TODO Password not right error
 
-    // 2. Get user by username (200 and 400)
-    // 3. Auth user against password (200 and 400)
-    // 4. Create or update session
-    // 5. render with cookie
     cookie := http.Cookie{
         Name: CookieKey,
-        Value: "xxx",
+        Value: sessionId,
         HttpOnly: true,
     }
     http.SetCookie(w, &cookie)
