@@ -7,12 +7,16 @@ import "net/http"
 
 const CookieKey = "sessionId"
 
+type IUser interface {
+    Create(username, password string) error
+}
+
 type UserServer struct{
-    user *User
+    user IUser
     http.Handler
 }
 
-func NewUserServer(user *User) *UserServer {
+func NewUserServer(user IUser) *UserServer {
 	p := new(UserServer)
 
 	router := http.NewServeMux()

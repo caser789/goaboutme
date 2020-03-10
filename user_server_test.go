@@ -5,9 +5,17 @@ import "net/http"
 import "net/http/httptest"
 
 
+type StubUser struct {
+    createCalls []string
+}
+
+func (u *StubUser) Create(username, password string) error {
+    u.createCalls = append(u.createCalls, username)
+    return nil
+}
+
 func TestRoute(t *testing.T) {
-    userModel := &UserModel{}
-    user := &User{userModel}
+    user := &StubUser{}
     server := NewUserServer(user)
 
     tests := []struct{
@@ -97,3 +105,25 @@ func assertStatus(t *testing.T, got, want int) {
 		t.Errorf("did not get correct status, got %d, want %d", got, want)
 	}
 }
+
+func TestRegisterPost(t *testing.T) {
+    t.Run("test success", func(t *testing.T) {
+        user := &StubUser{
+            createCalls: []string{},
+        }
+        server := NewUserServer(user)
+
+        method :=  http.MethodPost
+        url := "/user/register"
+
+        request, _ := http.NewRequest(method, url, nil)
+        response := httptest.NewRecorder()
+        server.ServeHTTP(response, request)
+
+		if len(user.createCalls) != 1 {
+			t.Fatalf("got %d calls to Create want %d", len(user.createCalls), 1)
+		}
+    })
+}
+
+
