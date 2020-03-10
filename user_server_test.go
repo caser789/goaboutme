@@ -6,7 +6,9 @@ import "net/http/httptest"
 
 
 func TestRoute(t *testing.T) {
-    server := NewUserServer()
+    userModel := &UserModel{}
+    user := &User{userModel}
+    server := NewUserServer(user)
 
     tests := []struct{
         name string

@@ -8,10 +8,11 @@ import "net/http"
 const CookieKey = "sessionId"
 
 type UserServer struct{
+    user *User
     http.Handler
 }
 
-func NewUserServer() *UserServer {
+func NewUserServer(user *User) *UserServer {
 	p := new(UserServer)
 
 	router := http.NewServeMux()
@@ -21,6 +22,7 @@ func NewUserServer() *UserServer {
 	router.Handle("/user/profile", http.HandlerFunc(p.handleUserProfile))
 
 	p.Handler = router
+    p.user = user
 	return p
 }
 
@@ -42,12 +44,13 @@ func (u *UserServer) handleUserRegisterGet(w http.ResponseWriter, r *http.Reques
 
 func (u *UserServer) handleUserRegisterPost(w http.ResponseWriter, r *http.Request) {
     // 1. Parse request
-    _ = r.ParseForm() // TODO handle error
-    _ = r.PostFormValue("username")
-    _ = r.PostFormValue("password")
+    _ = r.ParseForm()
+    username := r.PostFormValue("username")
+    password := r.PostFormValue("password")
 
-    // 2. TODO If user exists, return error
-    // 3. TODO Create user
+    // 2. Create user
+    _ = u.user.Create(username, password)
+
     http.Redirect(w, r, "/user/login", 302)
 }
 
