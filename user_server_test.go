@@ -9,6 +9,7 @@ type StubUser struct {
     registerCalls []string
     loginCalls []string
     logoutCalls []string
+    fromSessionIdCalls []string
 }
 
 func (u *StubUser) Register(username, password string) error {
@@ -21,8 +22,13 @@ func (u *StubUser) Login(username, password string) (sessionId string, err error
     return "", nil
 }
 
-func (u *StubUser) Logout(sessionId string) {
+func (u *StubUser) Logout() {
     u.logoutCalls = append(u.logoutCalls, "")
+}
+
+func (u *StubUser) FromSessionId(sessionId string) error {
+    u.fromSessionIdCalls = append(u.fromSessionIdCalls, sessionId)
+    return nil
 }
 
 func TestRoute(t *testing.T) {
@@ -173,8 +179,11 @@ func TestLogout(t *testing.T) {
         response := httptest.NewRecorder()
         server.ServeHTTP(response, request)
 
-		if len(user.logoutCalls) != 1 {
+		if len(user.fromSessionIdCalls) != 1 {
+			t.Fatalf("got %d calls to FromSessionId want %d", len(user.fromSessionIdCalls), 1)
+		}
 
+		if len(user.logoutCalls) != 1 {
 			t.Fatalf("got %d calls to Logout want %d", len(user.logoutCalls), 1)
 		}
     })

@@ -10,7 +10,8 @@ const CookieKey = "sessionId"
 type IUser interface {
     Register(username, password string) error
     Login(username, password string) (sessionId string, err error)
-    Logout(sessionId string)
+    FromSessionId(sessionId string) error
+    Logout()
 }
 
 type UserServer struct{
@@ -101,7 +102,8 @@ func (u *UserServer) handleUserLogout(w http.ResponseWriter, r *http.Request) {
 
 	if err != http.ErrNoCookie {
         sessionId := cookie.Value
-        u.user.Logout(sessionId)
+        u.user.FromSessionId(sessionId)
+        u.user.Logout()
 	}
     http.Redirect(w, r, "/user/login", 302)
 }
@@ -124,10 +126,8 @@ func (u *UserServer) handleUserProfileGet(w http.ResponseWriter, r *http.Request
         http.Redirect(w, r, "/user/login", 302)
         return
     }
+    // TODO session expires
 
-    // 2. Get session by sesionid (200 or 404)
-    // 3. Get user by session
-    // 4. render the profile
     t, _ := template.ParseFiles("templates/profile.html")
     t.Execute(w, nil)
 }

@@ -20,4 +20,9 @@ func (u *User) Login(username, password string) (sessionId string, err error) {
     return "", nil
 }
 
-func (u *User) Logout(sessionId string) {}
+func (u *User) Logout() {}
+
+
+func (u *User) FromSessionId(sessionId string) error {
+    return nil
+}
