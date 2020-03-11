@@ -2,8 +2,8 @@ package main
 
 import "html/template"
 import "net/http"
-// import "bytes"
-// import "io"
+import "bytes"
+import "io"
 
 const CookieKey = "sessionId"
 
@@ -12,6 +12,8 @@ type IUser interface {
     Login(username, password string) (sessionId string, err error)
     FromSessionId(sessionId string) error
     Logout()
+    GetProfile() map[string]string
+    UpdateProfile(nickname string, avatar []byte) error
 }
 
 type UserServer struct{
@@ -121,37 +123,47 @@ func (u *UserServer) handleUserProfile(w http.ResponseWriter, r *http.Request) {
 
 func (u *UserServer) handleUserProfileGet(w http.ResponseWriter, r *http.Request) {
     // 1. Get sessionId from cookie
-	_, err := r.Cookie(CookieKey)
+	cookie, err := r.Cookie(CookieKey)
     if err != nil {
         http.Redirect(w, r, "/user/login", 302)
         return
     }
+
+    sessionId := cookie.Value
+    u.user.FromSessionId(sessionId)
     // TODO session expires
 
+    profile := u.user.GetProfile()
+    // TODO Profile type
+
     t, _ := template.ParseFiles("templates/profile.html")
-    t.Execute(w, nil)
+    t.Execute(w, profile)
 }
 
 func (u *UserServer) handleUserProfilePost(w http.ResponseWriter, r *http.Request) {
     // 1. Get sessionId from cookie
-	_, err := r.Cookie(CookieKey)
+	cookie, err := r.Cookie(CookieKey)
     if err != nil {
         http.Redirect(w, r, "/user/login", 302)
+        return
     }
 
-    // 2. Get session by sesionid (200 or 404)
-    // 3. Get user by session
-    // 4. Parse file
+    sessionId := cookie.Value
+    u.user.FromSessionId(sessionId) // TODO user not exists
+
     r.ParseMultipartForm(10485760) // max body in memory is 10MB
     file, _, _ := r.FormFile("avatar")
+    buf := bytes.NewBuffer(nil)
+
     if file != nil {
         defer file.Close()
+        io.Copy(buf, file)
     }
-    // buf := bytes.NewBuffer(nil)
-    // io.Copy(buf, file)
-    // _ = r.PostFormValue("nickname")
-    // 5. Update profile
-    // 6. render profile
+
+    avatar := buf.Bytes()
+    nickname := r.PostFormValue("nickname")
+    u.user.UpdateProfile(nickname, avatar)
+
     t, _ := template.ParseFiles("templates/profile.html")
     t.Execute(w, nil)
 }

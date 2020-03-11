@@ -26,3 +26,11 @@ func (u *User) Logout() {}
 func (u *User) FromSessionId(sessionId string) error {
     return nil
 }
+
+func (u *User) GetProfile() map[string]string {
+    return nil
+}
+
+func (u *User) UpdateProfile(nickname string, avatar []byte) error {
+    return nil
+}

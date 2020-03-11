@@ -4,33 +4,6 @@ import "testing"
 import "net/http"
 import "net/http/httptest"
 
-
-type StubUser struct {
-    registerCalls []string
-    loginCalls []string
-    logoutCalls []string
-    fromSessionIdCalls []string
-}
-
-func (u *StubUser) Register(username, password string) error {
-    u.registerCalls = append(u.registerCalls, username)
-    return nil
-}
-
-func (u *StubUser) Login(username, password string) (sessionId string, err error) {
-    u.loginCalls = append(u.loginCalls, username)
-    return "", nil
-}
-
-func (u *StubUser) Logout() {
-    u.logoutCalls = append(u.logoutCalls, "")
-}
-
-func (u *StubUser) FromSessionId(sessionId string) error {
-    u.fromSessionIdCalls = append(u.fromSessionIdCalls, sessionId)
-    return nil
-}
-
 func TestRoute(t *testing.T) {
     user := &StubUser{}
     server := NewUserServer(user)
@@ -170,7 +143,7 @@ func TestLogout(t *testing.T) {
         }
         server := NewUserServer(user)
 
-        method :=  http.MethodPost
+        method :=  http.MethodGet
         url := "/user/logout"
 
         request, _ := http.NewRequest(method, url, nil)
@@ -187,4 +160,55 @@ func TestLogout(t *testing.T) {
 			t.Fatalf("got %d calls to Logout want %d", len(user.logoutCalls), 1)
 		}
     })
+}
+
+
+func TestProfile(t *testing.T) {
+    t.Run("test get profile success", func(t *testing.T) {
+        user := &StubUser{
+            registerCalls: []string{},
+        }
+        server := NewUserServer(user)
+
+        method :=  http.MethodGet
+        url := "/user/profile"
+
+        request, _ := http.NewRequest(method, url, nil)
+        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "abc"})
+
+        response := httptest.NewRecorder()
+        server.ServeHTTP(response, request)
+
+		if len(user.fromSessionIdCalls) != 1 {
+			t.Fatalf("got %d calls to FromSessionId want %d", len(user.fromSessionIdCalls), 1)
+		}
+
+		if len(user.getProfileCalls) != 1 {
+			t.Fatalf("got %d calls to GetProfile want %d", len(user.getProfileCalls), 1)
+		}
+    })
+    t.Run("test post profile success", func(t *testing.T) {
+        user := &StubUser{
+            registerCalls: []string{},
+        }
+        server := NewUserServer(user)
+
+        method :=  http.MethodPost
+        url := "/user/profile"
+
+        request, _ := http.NewRequest(method, url, nil)
+        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "abc"})
+
+        response := httptest.NewRecorder()
+        server.ServeHTTP(response, request)
+
+		if len(user.fromSessionIdCalls) != 1 {
+			t.Fatalf("got %d calls to FromSessionId want %d", len(user.fromSessionIdCalls), 1)
+		}
+
+		if len(user.updateProfileCalls) != 1 {
+			t.Fatalf("got %d calls to UpdateProfile want %d", len(user.updateProfileCalls), 1)
+		}
+    })
+
 }
