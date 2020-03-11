@@ -60,7 +60,6 @@ func (u *User) Logout() {
     u.sessionModel.Delete()
 }
 
-
 func (u *User) FromSessionId(sessionId int) error {
     u.sessionModel.Get(sessionId)  // error
     userId := u.sessionModel.GetUserId()
