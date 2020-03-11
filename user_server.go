@@ -104,7 +104,7 @@ func (u *UserServer) handleUserLogout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(CookieKey)
 
 	if err != http.ErrNoCookie {
-        sessionId, err := strconv.Atoi(cookie.Value)
+        sessionId, _ := strconv.Atoi(cookie.Value)
         u.user.FromSessionId(sessionId)
         u.user.Logout()
 	}
