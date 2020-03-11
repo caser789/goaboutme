@@ -1,13 +1,20 @@
 package user
 
 import "errors"
+import "encoding/base64"
 
 type IUserModel interface {
+    // Creater
     Create(username, password string) error
     FromUserName(username string) error
+    Get(userId int) error
+
+    // Getter
     GetPassword() string
     GetId() int
-    Get(userId int) error
+    GetUsername() string
+    GetNickname() string
+    GetAvatar() []byte
 }
 
 type ISessionModel interface{
@@ -57,7 +64,11 @@ func (u *User) FromSessionId(sessionId int) error {
 }
 
 func (u *User) GetProfile() map[string]string {
-    return nil
+    return map[string]string {
+        "username": u.userModel.GetUsername(),
+        "nickname": u.userModel.GetNickname(),
+        "avatar": base64.StdEncoding.EncodeToString(u.userModel.GetAvatar()),
+    }
 }
 
 func (u *User) UpdateProfile(nickname string, avatar []byte) error {

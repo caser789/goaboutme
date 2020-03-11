@@ -77,6 +77,19 @@ func TestUser(t *testing.T) {
         assertCalled(t, "SessionModel.Delete", len(sessionModel.deleteCalls))
     })
 
+    t.Run("test GetProfile", func(t *testing.T) {
+        userModel := &StubUserModel{
+            usernameToPassword: map[string]string{},
+        }
+        sessionModel := &StubSessionModel{}
+        user :=  &User{userModel, sessionModel}
+
+        user.GetProfile()
+
+        assertCalled(t, "UserModel.GetUsername", len(userModel.getUsernameCalls))
+        assertCalled(t, "UserModel.GetNickname", len(userModel.getNicknameCalls))
+        assertCalled(t, "UserModel.GetAvatar", len(userModel.getAvatarCalls))
+    })
 }
 
 func assertContains(t *testing.T, store map[string]string, key string) {

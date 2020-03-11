@@ -11,6 +11,9 @@ type StubUserModel struct {
     getPasswordCalls []string
     getIdCalls []string
     getCalls []int
+    getUsernameCalls []string
+    getNicknameCalls []string
+    getAvatarCalls []string
 }
 
 func (u *StubUserModel) Create(username, password string) error {
@@ -37,4 +40,19 @@ func (u *StubUserModel) GetId() int {
 func (u *StubUserModel) Get(userId int) error {
     u.getCalls = append(u.getCalls, userId)
     return nil
+}
+
+func (u *StubUserModel) GetUsername() string {
+    u.getUsernameCalls = append(u.getUsernameCalls, "")
+    return "username"
+}
+
+func (u *StubUserModel) GetNickname() string {
+    u.getNicknameCalls = append(u.getNicknameCalls, "")
+    return "nickname"
+}
+
+func (u *StubUserModel) GetAvatar() []byte {
+    u.getAvatarCalls = append(u.getAvatarCalls, "")
+    return []byte{'a'}
 }
