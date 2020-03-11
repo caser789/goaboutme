@@ -34,6 +34,25 @@ func TestUser(t *testing.T) {
         assertCalled(t, "SessionModel.Create", len(sessionModel.createCalls))
     })
 
+    t.Run("test login returns error with wrong password", func(t *testing.T) {
+        userModel := &StubUserModel{
+            usernameToPassword: map[string]string{},
+        }
+        sessionModel := &StubSessionModel{}
+        user := &User{userModel, sessionModel}
+
+        username := "jiao.xue"
+        password := "888"
+
+        user.Login(username, password)
+
+        assertCalled(t, "UserModel.FromUserName", len(userModel.fromUserNameCalls))
+        assertCalled(t, "UserModel.GetPassword", len(userModel.getPasswordCalls))
+        assertNotCalled(t, "SessionModel.Create", len(sessionModel.createCalls))
+    })
+
+
+
 }
 
 func assertContains(t *testing.T, store map[string]string, key string) {
@@ -47,5 +66,11 @@ func assertContains(t *testing.T, store map[string]string, key string) {
 func assertCalled(t *testing.T, name string, count int) {
     if count != 1 {
         t.Fatalf("got %d calls to %s Create want %d", count, name, 1)
+    }
+}
+
+func assertNotCalled(t *testing.T, name string, count int) {
+    if count != 0 {
+        t.Fatalf("got %d calls to %s Create want %d", count, name, 0)
     }
 }
