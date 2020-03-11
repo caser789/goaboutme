@@ -1,5 +1,8 @@
 package user
 
+const correctPassword = "1234"
+const correctUserId = 1234
+
 type StubUserModel struct {
     usernameToPassword map[string]string
 
@@ -22,10 +25,10 @@ func (u *StubUserModel) FromUserName(username string) error {
 
 func (u *StubUserModel) GetPassword() string {
     u.getPasswordCalls = append(u.getPasswordCalls, "")
-    return "123"
+    return correctPassword
 }
 
 func (u *StubUserModel) GetId() int {
     u.getIdCalls = append(u.getIdCalls, "")
-    return 123
+    return correctUserId
 }

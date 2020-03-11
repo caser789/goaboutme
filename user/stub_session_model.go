@@ -1,5 +1,7 @@
 package user
 
+const correctSessionId = 54321
+
 type StubSessionModel struct {
     createCalls []int
     getIdCalls []string
@@ -12,5 +14,5 @@ func (s *StubSessionModel) Create(userId int) error {
 
 func (s *StubSessionModel) GetId() int {
     s.getIdCalls = append(s.getIdCalls, "")
-    return 333
+    return correctSessionId
 }
