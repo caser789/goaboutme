@@ -56,7 +56,7 @@ func TestRoute(t *testing.T) {
             method: http.MethodGet,
             url: "/user/profile",
             statusCode: http.StatusOK,
-            cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
+            cookie: &http.Cookie{Name: CookieKey, Value: "2345"},
         },
         {
             name: "/user/profile POST without cookie returns 302",
@@ -69,7 +69,7 @@ func TestRoute(t *testing.T) {
             method: http.MethodPost,
             url: "/user/profile",
             statusCode: http.StatusOK,
-            cookie: &http.Cookie{Name: CookieKey, Value: "abc"},
+            cookie: &http.Cookie{Name: CookieKey, Value: "1234"},
         },
     }
 
@@ -141,7 +141,7 @@ func TestLogout(t *testing.T) {
         url := "/user/logout"
 
         request, _ := http.NewRequest(method, url, nil)
-        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "abc"})
+        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "234"})
 
         response := httptest.NewRecorder()
         server.ServeHTTP(response, request)
@@ -166,7 +166,7 @@ func TestProfile(t *testing.T) {
         url := "/user/profile"
 
         request, _ := http.NewRequest(method, url, nil)
-        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "abc"})
+        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "123"})
 
         response := httptest.NewRecorder()
         server.ServeHTTP(response, request)
@@ -187,7 +187,7 @@ func TestProfile(t *testing.T) {
         url := "/user/profile"
 
         request, _ := http.NewRequest(method, url, nil)
-        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "abc"})
+        request.AddCookie(&http.Cookie{Name: CookieKey, Value: "888"})
 
         response := httptest.NewRecorder()
         server.ServeHTTP(response, request)

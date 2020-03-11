@@ -4,13 +4,14 @@ import "html/template"
 import "net/http"
 import "bytes"
 import "io"
+import "strconv"
 
 const CookieKey = "sessionId"
 
 type IUser interface {
     Register(username, password string) error
-    Login(username, password string) (sessionId string, err error)
-    FromSessionId(sessionId string) error
+    Login(username, password string) (sessionId int, err error)
+    FromSessionId(sessionId int) error
     Logout()
     GetProfile() map[string]string
     UpdateProfile(nickname string, avatar []byte) error
@@ -91,7 +92,7 @@ func (u *UserServer) handleUserLoginPost(w http.ResponseWriter, r *http.Request)
 
     cookie := http.Cookie{
         Name: CookieKey,
-        Value: sessionId,
+        Value: string(sessionId),
         HttpOnly: true,
     }
     http.SetCookie(w, &cookie)
@@ -103,7 +104,7 @@ func (u *UserServer) handleUserLogout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(CookieKey)
 
 	if err != http.ErrNoCookie {
-        sessionId := cookie.Value
+        sessionId, err := strconv.Atoi(cookie.Value)
         u.user.FromSessionId(sessionId)
         u.user.Logout()
 	}
@@ -129,7 +130,7 @@ func (u *UserServer) handleUserProfileGet(w http.ResponseWriter, r *http.Request
         return
     }
 
-    sessionId := cookie.Value
+    sessionId, _ := strconv.Atoi(cookie.Value)
     u.user.FromSessionId(sessionId)
     // TODO session expires
 
@@ -148,7 +149,7 @@ func (u *UserServer) handleUserProfilePost(w http.ResponseWriter, r *http.Reques
         return
     }
 
-    sessionId := cookie.Value
+    sessionId, _ := strconv.Atoi(cookie.Value)
     u.user.FromSessionId(sessionId) // TODO user not exists
 
     r.ParseMultipartForm(10485760) // max body in memory is 10MB

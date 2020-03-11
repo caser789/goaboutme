@@ -30,12 +30,12 @@ type ISessionModel interface{
 }
 
 type User struct {
-    userModel IUserModel
-    sessionModel ISessionModel
+    UserModel IUserModel
+    SessionModel ISessionModel
 }
 
 func (u *User) Register(username, password string) error {
-    err := u.userModel.Create(username, password)
+    err := u.UserModel.Create(username, password)
     if err != nil {
         return errors.New("user exits")
     }
@@ -43,42 +43,42 @@ func (u *User) Register(username, password string) error {
 }
 
 func (u *User) Login(username, password string) (sessionId int, err error) {
-    err = u.userModel.FromUserName(username)
+    err = u.UserModel.FromUserName(username)
     if err != nil {
         return 0, errors.New("user exits")
     }
 
-    if u.userModel.GetPassword() != password {
+    if u.UserModel.GetPassword() != password {
         return 0, errors.New("password not match")
     }
 
-    u.sessionModel.Create(u.userModel.GetId())
-    return u.sessionModel.GetId(), nil
+    u.SessionModel.Create(u.UserModel.GetId())
+    return u.SessionModel.GetId(), nil
 }
 
 func (u *User) Logout() {
-    u.sessionModel.Delete()
+    u.SessionModel.Delete()
 }
 
 func (u *User) FromSessionId(sessionId int) error {
-    u.sessionModel.Get(sessionId)  // error
-    userId := u.sessionModel.GetUserId()
+    u.SessionModel.Get(sessionId)  // error
+    userId := u.SessionModel.GetUserId()
 
-    u.userModel.Get(userId)
+    u.UserModel.Get(userId)
     return nil
 }
 
 func (u *User) GetProfile() map[string]string {
     return map[string]string {
-        "username": u.userModel.GetUsername(),
-        "nickname": u.userModel.GetNickname(),
-        "avatar": base64.StdEncoding.EncodeToString(u.userModel.GetAvatar()),
+        "username": u.UserModel.GetUsername(),
+        "nickname": u.UserModel.GetNickname(),
+        "avatar": base64.StdEncoding.EncodeToString(u.UserModel.GetAvatar()),
     }
 }
 
 func (u *User) UpdateProfile(nickname string, avatar []byte) error {
-    u.userModel.SetNickname(nickname)
-    u.userModel.SetAvatar(avatar)
+    u.UserModel.SetNickname(nickname)
+    u.UserModel.SetAvatar(avatar)
     // TODO batch set
     return nil
 }

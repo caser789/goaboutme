@@ -4,7 +4,7 @@ type StubUser struct {
     registerCalls []string
     loginCalls []string
     logoutCalls []string
-    fromSessionIdCalls []string
+    fromSessionIdCalls []int
     getProfileCalls []string
     updateProfileCalls []string
 }
@@ -14,16 +14,16 @@ func (u *StubUser) Register(username, password string) error {
     return nil
 }
 
-func (u *StubUser) Login(username, password string) (sessionId string, err error) {
+func (u *StubUser) Login(username, password string) (sessionId int, err error) {
     u.loginCalls = append(u.loginCalls, username)
-    return "", nil
+    return 0, nil
 }
 
 func (u *StubUser) Logout() {
     u.logoutCalls = append(u.logoutCalls, "")
 }
 
-func (u *StubUser) FromSessionId(sessionId string) error {
+func (u *StubUser) FromSessionId(sessionId int) error {
     u.fromSessionIdCalls = append(u.fromSessionIdCalls, sessionId)
     return nil
 }
