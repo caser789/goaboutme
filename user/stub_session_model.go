@@ -7,6 +7,7 @@ type StubSessionModel struct {
     getIdCalls []string
     getUserIdCalls []string
     getCalls []int
+    deleteCalls []string
 }
 
 func (s *StubSessionModel) Create(userId int) error {
@@ -27,4 +28,8 @@ func (s *StubSessionModel) Get(sessionId int) error {
 func (s *StubSessionModel) GetUserId() int {
     s.getUserIdCalls = append(s.getUserIdCalls, "")
     return 123
+}
+
+func (s *StubSessionModel) Delete() {
+    s.deleteCalls = append(s.deleteCalls, "")
 }

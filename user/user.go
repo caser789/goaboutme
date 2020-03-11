@@ -15,6 +15,7 @@ type ISessionModel interface{
     GetId() int
     GetUserId() int
     Get(sessionId int) error
+    Delete()
 }
 
 type User struct {
@@ -43,6 +44,7 @@ func (u *User) Login(username, password string) (sessionId int, err error) {
 }
 
 func (u *User) Logout() {
+    u.sessionModel.Delete()
 }
 
 
