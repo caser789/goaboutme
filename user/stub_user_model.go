@@ -10,6 +10,7 @@ type StubUserModel struct {
     fromUserNameCalls []string
     getPasswordCalls []string
     getIdCalls []string
+    getCalls []int
 }
 
 func (u *StubUserModel) Create(username, password string) error {
@@ -31,4 +32,9 @@ func (u *StubUserModel) GetPassword() string {
 func (u *StubUserModel) GetId() int {
     u.getIdCalls = append(u.getIdCalls, "")
     return correctUserId
+}
+
+func (u *StubUserModel) Get(userId int) error {
+    u.getCalls = append(u.getCalls, userId)
+    return nil
 }

@@ -7,11 +7,14 @@ type IUserModel interface {
     FromUserName(username string) error
     GetPassword() string
     GetId() int
+    Get(userId int) error
 }
 
 type ISessionModel interface{
     Create(userId int) error
     GetId() int
+    GetUserId() int
+    Get(sessionId int) error
 }
 
 type User struct {
@@ -39,10 +42,15 @@ func (u *User) Login(username, password string) (sessionId int, err error) {
     return u.sessionModel.GetId(), nil
 }
 
-func (u *User) Logout() {}
+func (u *User) Logout() {
+}
 
 
-func (u *User) FromSessionId(sessionId string) error {
+func (u *User) FromSessionId(sessionId int) error {
+    u.sessionModel.Get(sessionId)  // error
+    userId := u.sessionModel.GetUserId()
+
+    u.userModel.Get(userId)
     return nil
 }
 

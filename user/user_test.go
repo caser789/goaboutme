@@ -51,8 +51,19 @@ func TestUser(t *testing.T) {
         assertNotCalled(t, "SessionModel.Create", len(sessionModel.createCalls))
     })
 
+    t.Run("test FromSessionId", func(t *testing.T) {
+        userModel := &StubUserModel{
+            usernameToPassword: map[string]string{},
+        }
+        sessionModel := &StubSessionModel{}
+        user :=  &User{userModel, sessionModel}
 
+        user.FromSessionId(123)
 
+        assertCalled(t, "SessionModel.Get", len(sessionModel.getCalls))
+        assertCalled(t, "SessionModel.GetUserId", len(sessionModel.getUserIdCalls))
+        assertCalled(t, "UserModel.Get", len(userModel.getCalls))
+    })
 }
 
 func assertContains(t *testing.T, store map[string]string, key string) {
