@@ -98,9 +98,7 @@ func assertStatus(t *testing.T, got, want int) {
 
 func TestRegisterPost(t *testing.T) {
     t.Run("test register success", func(t *testing.T) {
-        user := &StubUser{
-            registerCalls: []string{},
-        }
+        user := &StubUser{}
         server := NewUserServer(user)
 
         method :=  http.MethodPost
@@ -118,9 +116,7 @@ func TestRegisterPost(t *testing.T) {
 
 func TestLogin(t *testing.T) {
     t.Run("test login success", func(t *testing.T) {
-        user := &StubUser{
-            registerCalls: []string{},
-        }
+        user := &StubUser{}
         server := NewUserServer(user)
 
         method :=  http.MethodPost
@@ -138,9 +134,7 @@ func TestLogin(t *testing.T) {
 
 func TestLogout(t *testing.T) {
     t.Run("test logout success", func(t *testing.T) {
-        user := &StubUser{
-            registerCalls: []string{},
-        }
+        user := &StubUser{}
         server := NewUserServer(user)
 
         method :=  http.MethodGet
@@ -165,9 +159,7 @@ func TestLogout(t *testing.T) {
 
 func TestProfile(t *testing.T) {
     t.Run("test get profile success", func(t *testing.T) {
-        user := &StubUser{
-            registerCalls: []string{},
-        }
+        user := &StubUser{}
         server := NewUserServer(user)
 
         method :=  http.MethodGet
@@ -188,9 +180,7 @@ func TestProfile(t *testing.T) {
 		}
     })
     t.Run("test post profile success", func(t *testing.T) {
-        user := &StubUser{
-            registerCalls: []string{},
-        }
+        user := &StubUser{}
         server := NewUserServer(user)
 
         method :=  http.MethodPost
@@ -210,5 +200,4 @@ func TestProfile(t *testing.T) {
 			t.Fatalf("got %d calls to UpdateProfile want %d", len(user.updateProfileCalls), 1)
 		}
     })
-
 }
