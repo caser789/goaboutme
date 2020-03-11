@@ -164,7 +164,8 @@ func (u *UserServer) handleUserProfilePost(w http.ResponseWriter, r *http.Reques
     avatar := buf.Bytes()
     nickname := r.PostFormValue("nickname")
     u.user.UpdateProfile(nickname, avatar)
+    profile := u.user.GetProfile()
 
     t, _ := template.ParseFiles("templates/profile.html")
-    t.Execute(w, nil)
+    t.Execute(w, profile)
 }
