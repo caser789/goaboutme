@@ -1,5 +1,7 @@
 package user
 
+import "errors"
+
 const correctPassword = "1234"
 const correctUserId = 1234
 
@@ -19,8 +21,13 @@ type StubUserModel struct {
 }
 
 func (u *StubUserModel) Create(username, password string) error {
-    u.usernameToPassword[username] = password
     u.createCalls = append(u.createCalls, username)
+    _, ok := u.usernameToPassword[username]
+    if ok {
+        return errors.New("user exits")
+    }
+
+    u.usernameToPassword[username] = password
     return nil
 }
 

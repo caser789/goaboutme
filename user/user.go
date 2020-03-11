@@ -37,14 +37,16 @@ type User struct {
 func (u *User) Register(username, password string) error {
     err := u.userModel.Create(username, password)
     if err != nil {
-        return err
+        return errors.New("user exits")
     }
     return nil
 }
 
 func (u *User) Login(username, password string) (sessionId int, err error) {
-    u.userModel.FromUserName(username)
-    // TODO not exists
+    err = u.userModel.FromUserName(username)
+    if err != nil {
+        return 0, errors.New("user exits")
+    }
 
     if u.userModel.GetPassword() != password {
         return 0, errors.New("password not match")

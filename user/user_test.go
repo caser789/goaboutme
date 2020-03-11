@@ -2,7 +2,7 @@ package user
 
 import "testing"
 
-func TestUser(t *testing.T) {
+func TestUserAPIs(t *testing.T) {
     t.Run("test register success", func(t *testing.T) {
         userModel := &StubUserModel{
             usernameToPassword: map[string]string{},
@@ -16,6 +16,21 @@ func TestUser(t *testing.T) {
 
         assertContains(t, userModel.usernameToPassword, username)
         assertCalled(t, "UserModel.Create", len(userModel.createCalls))
+    })
+
+    t.Run("test register fails if user already exists", func(t *testing.T) {
+        userModel := &StubUserModel{
+            usernameToPassword: map[string]string{"a": "1"},
+        }
+        sessionModel := &StubSessionModel{}
+        user := &User{userModel, sessionModel}
+
+        username := "a"
+        password := "123456"
+        err := user.Register(username, password)
+
+        assertCalled(t, "UserModel.Create", len(userModel.createCalls))
+        assertNotNil(t, err)
     })
 
     t.Run("test login success", func(t *testing.T) {
@@ -108,6 +123,10 @@ func TestUser(t *testing.T) {
 
 }
 
+func TestUserIntegration(t *testing.T) {
+
+}
+
 func assertContains(t *testing.T, store map[string]string, key string) {
 	t.Helper()
     _, ok := store[key]
@@ -125,5 +144,11 @@ func assertCalled(t *testing.T, name string, count int) {
 func assertNotCalled(t *testing.T, name string, count int) {
     if count != 0 {
         t.Fatalf("got %d calls to %s Create want %d", count, name, 0)
+    }
+}
+
+func assertNotNil(t *testing.T, err error) {
+    if err == nil {
+        t.Fatalf("got nil error")
     }
 }
