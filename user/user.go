@@ -15,6 +15,10 @@ type IUserModel interface {
     GetUsername() string
     GetNickname() string
     GetAvatar() []byte
+
+    // Setter
+    SetNickname(nickname string) error
+    SetAvatar(avatar []byte) error
 }
 
 type ISessionModel interface{
@@ -72,5 +76,8 @@ func (u *User) GetProfile() map[string]string {
 }
 
 func (u *User) UpdateProfile(nickname string, avatar []byte) error {
+    u.userModel.SetNickname(nickname)
+    u.userModel.SetAvatar(avatar)
+    // TODO batch set
     return nil
 }

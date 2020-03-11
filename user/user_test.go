@@ -90,6 +90,22 @@ func TestUser(t *testing.T) {
         assertCalled(t, "UserModel.GetNickname", len(userModel.getNicknameCalls))
         assertCalled(t, "UserModel.GetAvatar", len(userModel.getAvatarCalls))
     })
+
+    t.Run("test UpdateProfile", func(t *testing.T) {
+        userModel := &StubUserModel{
+            usernameToPassword: map[string]string{},
+        }
+        sessionModel := &StubSessionModel{}
+        user :=  &User{userModel, sessionModel}
+
+        nickname := "xxx"
+        avatar := []byte{'a', 'b'}
+        user.UpdateProfile(nickname, avatar)
+
+        assertCalled(t, "UserModel.SetNickname", len(userModel.setNicknameCalls))
+        assertCalled(t, "UserModel.SetAvatar", len(userModel.setAvatarCalls))
+    })
+
 }
 
 func assertContains(t *testing.T, store map[string]string, key string) {
