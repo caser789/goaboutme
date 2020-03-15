@@ -1,14 +1,13 @@
-package main
+package mysql_user_model
 
 import "database/sql"
 import _ "github.com/go-sql-driver/mysql"
-import "fmt"
 import "log"
 
 const CONN_HOST = "localhost"
 const CONN_PORT = "3306"
 const DRIVER_NAME = "mysql"
-const DATA_SOURCE_NAME = ""
+const DATA_SOURCE_NAME = "root:Ms!(**0212@/test"
 var Db *sql.DB
 var connectionError error
 
@@ -98,91 +97,8 @@ func (m *MysqlUserModel) SetAvatar(avatar []byte) (err error) {
     return err
 }
 
-func testCreate() {
-    username := "jiao"
-    password := "1111"
-    model := &MysqlUserModel{}
-    model.Create(username, password)
-    fmt.Println(model.id)
-}
-
-func testFromUsername() {
-    username := "jiaoo"
-    model := &MysqlUserModel{}
-    err := model.FromUsername(username)
-    fmt.Println(err)
-
-    username = "jiao"
-    model = &MysqlUserModel{}
-    err = model.FromUsername(username)
-    fmt.Println(model.GetId())
-    fmt.Println(model.GetUsername())
-    fmt.Println(model.GetNickname())
-    fmt.Println(model.GetPassword())
-    fmt.Println(model.GetAvatar())
-}
-
-func testGet() {
-    userId := 2
-    model := &MysqlUserModel{}
-    err := model.Get(userId)
-    fmt.Println(err)
-
-    userId = 5
-    model = &MysqlUserModel{}
-    err = model.Get(userId)
-    fmt.Println(model.GetId())
-    fmt.Println(model.GetUsername())
-    fmt.Println(model.GetNickname())
-    fmt.Println(model.GetPassword())
-    fmt.Println(model.GetAvatar())
-}
-
-func testSetNicknameError(){
-    userId := 2
-    model := &MysqlUserModel{}
-    model.Get(userId)
-
-    nickname := "lalal"
-    model.SetNickname(nickname)
-
-    model = &MysqlUserModel{}
-    model.Get(userId)
-    fmt.Println(model.GetNickname())
-
-}
-
-func testSetNickname(){
-    userId := 5
-    model := &MysqlUserModel{}
-    model.Get(userId)
-
-    nickname := "lalalsss"
-    model.SetNickname(nickname)
-
-    model = &MysqlUserModel{}
-    model.Get(userId)
-    fmt.Println(model.GetNickname())
-}
-
-func testSetAvatar(){
-    userId := 5
-    model := &MysqlUserModel{}
-    model.Get(userId)
-
-    avatar := []byte{'a', 'b'}
-    model.SetAvatar(avatar)
-
-    model = &MysqlUserModel{}
-    model.Get(userId)
-    fmt.Println(model.GetAvatar())
-}
-
-func main() {
-    // testCreate()
-    // testFromUsername()
-    // testGet()
-    // testSetNicknameError()
-    // testSetNickname()
-    testSetAvatar()
+func (m *MysqlUserModel) Delete() (err error) {
+    statement := "delete from user where id = ?"
+    _, err = Db.Exec(statement, m.id)
+    return
 }
