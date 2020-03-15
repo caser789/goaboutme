@@ -9,13 +9,14 @@ type RedisSessionModel struct {
     userId int
 }
 
+var client = redis.NewClient(&redis.Options{
+    Addr: "localhost:6379",
+    Password: "",
+    DB: 0,
+})
+
 
 func (r *RedisSessionModel) Create(userId int) error {
-	client := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		Password: "",
-		DB: 0,
-	})
     result, err := client.Incr("session_id").Result()
     sessionId := int(result)
     if err != nil {
@@ -38,15 +39,13 @@ func (r *RedisSessionModel) Create(userId int) error {
 }
 
 func (r *RedisSessionModel) Get(sessionId int) error {
-	client := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		Password: "",
-		DB: 0,
-	})
     userId, err := client.Get(getSessionIdToUserIdKey(sessionId)).Int()
-    if err != nil {
+    if err == redis.Nil {
+        return err
+    } else if err != nil {
         panic(err)
     }
+
     r.userId = userId
     r.sessionId = sessionId
 
@@ -54,6 +53,8 @@ func (r *RedisSessionModel) Get(sessionId int) error {
 }
 
 func (r *RedisSessionModel) Delete() {
+    client.Del(getSessionIdToUserIdKey(r.sessionId))
+    client.Del(getUserIdToSessionIdKey(r.userId))
 }
 
 func (r *RedisSessionModel) GetId() int {
